@@ -1,0 +1,188 @@
+﻿@model FinPortal.ViewModels.LoginRegFPVM
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Piggy Bank Financial Tracker | Log in</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/fonts/css/all.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="~/Content/icheck-bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/adminlte.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+
+</head>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <b>Piggy Bank Financial Tracker</b>
+        </div>
+        <div id="accordion">
+            <!-- we are adding the .class so bootstrap.js collapse plugin detects it -->
+            <div class="card card-primary">
+                <div class="card-header row" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" style="cursor:pointer">
+                    <div class="col-4 offset-4" style="text-align:center; cursor:pointer">Sign In</div>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse show" data-parent="#accordion">
+                    <div class="card-body">
+                        @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <div class="input-group mb-3">
+                                @Html.TextBoxFor(m => m.LoginVM.Email, new { @class = "form-control", placeholder = "Email" })
+                                @Html.ValidationMessageFor(m => m.LoginVM.Email)
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-envelope"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input-group mb-3">
+                                @Html.PasswordFor(m => m.LoginVM.Password, new { @class = "form-control", placeholder = "Password" })
+                                @Html.ValidationMessageFor(m => m.LoginVM.Password)
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="icheck-primary">
+                                        <input type="checkbox" id="remember">
+                                        <label for="remember">
+                                            Remember Me
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-4">
+                                    <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="card card-primary">
+                <div class="card-header row" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                    <div class="col-4 offset-4" style="text-align:center; cursor:pointer">Register</div>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse" data-parent="#accordion">
+                    <div class="card-body">
+                        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { enctype = "Multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <div class="input-group mb-3">
+                                @Html.TextBoxFor(m => m.RegisterVM.Email, new { @class = "form-control", placeholder = "Email" })
+                                @Html.ValidationMessageFor(m => m.RegisterVM.Email)
+
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-envelope"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input-group mb-3">
+                                @Html.TextBoxFor(m => m.RegisterVM.FirstName, new { @class = "form-control", placeholder = "First Name" })
+                                @Html.ValidationMessageFor(m => m.RegisterVM.FirstName)
+
+                            </div>
+                            <div class="input-group mb-3">
+                                @Html.TextBoxFor(m => m.RegisterVM.LastName, new { @class = "form-control", placeholder = "Last Name" })
+                                @Html.ValidationMessageFor(m => m.RegisterVM.LastName)
+
+                            </div>
+                            <div class="input-group mb-3">
+                                @Html.PasswordFor(m => m.RegisterVM.Password, new { @class = "form-control", placeholder = "Password" })
+                                @Html.ValidationMessageFor(m => m.RegisterVM.Password)
+
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input-group mb-3">
+                                @Html.PasswordFor(m => m.RegisterVM.ConfirmPassword, new { @class = "form-control", placeholder = "Confirm Password" })
+                                @Html.ValidationMessageFor(m => m.RegisterVM.ConfirmPassword)
+
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div>
+                                @Html.TextBox("Avatar", null, new { type = "file" })
+                            </div>
+                            <br />
+
+                            <div class="row">
+                                <!-- /.col -->
+                                <div class="col-4 offset-4">
+                                    <button type="submit" class="btn btn-primary btn-block btn-flat">Register</button>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+            <div class="card card-primary">
+                <div class="card-header row" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                    <div class="col-8 offset-2" style="text-align:center; cursor:pointer">Forgot Password</div>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse" data-parent="#accordion">
+                    <div class="card-body">
+                        @using (Html.BeginForm("ForgotPassword", "Account", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <div class="input-group mb-3">
+                                @Html.TextBoxFor(m => m.ForgotPVM.Email, new { @class = "form-control", placeholder = "Email" })
+                                @Html.ValidationMessageFor(m => m.ForgotPVM.Email)
+
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-envelope"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- /.col -->
+                                <div class="col-4 offset-4">
+                                    <button type="submit" class="btn btn-primary btn-block btn-flat">Send</button>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.login-box -->
+    <!-- jQuery -->
+    <script src="~/Scripts/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/Scripts/adminlte.min.js"></script>
+
+</body>
+</html>
