@@ -179,10 +179,11 @@
     <Compile Include="Controllers\TransactionsController.cs" />
     <Compile Include="Enums\AccountType.cs" />
     <Compile Include="Enums\TransactionType.cs" />
-    <Compile Include="Extensions\InvitationExtensions.cs" />
+    <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\HouseholdHelper.cs" />
     <Compile Include="Helpers\ImageUploadValidator.cs" />
     <Compile Include="Helpers\InvitationHelper.cs" />
     <Compile Include="Helpers\RoleHelpers.cs" />
@@ -200,6 +201,7 @@
     <Compile Include="Models\Transaction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\DashboardVM.cs" />
     <Compile Include="ViewModels\LoginRegFPVM.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -325,11 +327,9 @@
     <Content Include="Views\BudgetItems\Details.cshtml" />
     <Content Include="Views\BudgetItems\Edit.cshtml" />
     <Content Include="Views\BudgetItems\Index.cshtml" />
-    <Content Include="Views\Households\Create.cshtml" />
     <Content Include="Views\Households\Delete.cshtml" />
     <Content Include="Views\Households\Details.cshtml" />
     <Content Include="Views\Households\Edit.cshtml" />
-    <Content Include="Views\Households\Index.cshtml" />
     <Content Include="Views\Notifications\Create.cshtml" />
     <Content Include="Views\Notifications\Delete.cshtml" />
     <Content Include="Views\Notifications\Details.cshtml" />

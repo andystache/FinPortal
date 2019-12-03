@@ -6,13 +6,17 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using FinPortal.Helpers;
 using FinPortal.Models;
+using Microsoft.AspNet.Identity;
 
 namespace FinPortal.Controllers
 {
     public class HouseholdsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private RoleHelpers roleHelper = new RoleHelpers();
+        private HouseholdHelper householdHelper = new HouseholdHelper();
 
         // GET: Households
         public ActionResult Index()
@@ -46,13 +50,23 @@ namespace FinPortal.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Greeting,Created")] Household household)
+        [Authorize(Roles ="Guest")]
+        public ActionResult Create([Bind(Include = "Name,Greeting")] Household household)
         {
+
+            var userId = User.Identity.GetUserId();
             if (ModelState.IsValid)
             {
+                household.Created = DateTime.Now;
                 db.Households.Add(household);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                var houseId = household.Id;
+                householdHelper.AddUserToHouse(userId, houseId);
+                roleHelper.RemoveUserFromRole(userId, "Guest");
+                roleHelper.AddUserToRole(userId, "HeadOfHouse");
+                // Needs the auto logout/in to reset User Role
+                // Change Redirect to Initial Account setup page
+                return RedirectToAction("Dashboard", "Home");
             }
 
             return View(household);

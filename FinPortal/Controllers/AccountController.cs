@@ -178,6 +178,10 @@ namespace FinPortal.Controllers
                     }
                 }
                 var result = await UserManager.CreateAsync(user, model.RegisterVM.Password);
+
+                var userId = user.Id;
+                roleHelper.AddUserToRole(userId, "Guest");
+
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
@@ -194,7 +198,7 @@ namespace FinPortal.Controllers
             }
 
             // If we got this far, something failed, redisplay form
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Broken", "Home");
         }
 
         public ActionResult AcceptInvitation(string recipientEmail, string code)
@@ -481,6 +485,13 @@ namespace FinPortal.Controllers
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home");
         }
+
+        public ActionResult CustomLogOut()
+        {
+            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            return RedirectToAction("Index", "Home");
+        }
+
 
         //
         // GET: /Account/ExternalLoginFailure

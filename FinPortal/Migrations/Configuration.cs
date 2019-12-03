@@ -27,6 +27,10 @@ namespace FinPortal.Migrations
             {
                 roleManager.Create(new IdentityRole { Name = "Member" });
             }
+            if (!context.Roles.Any(r => r.Name == "Guest"))
+            {
+                roleManager.Create(new IdentityRole { Name = "Guest" });
+            }
             #endregion
 
             //  This method will be called after migrating to the latest version.

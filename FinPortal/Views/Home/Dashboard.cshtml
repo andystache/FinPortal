@@ -1,7 +1,123 @@
-﻿
-@{
-    ViewBag.Title = "Dashboard";
-}
+﻿@model FinPortal.ViewModels.DashboardVM
 
 <h2>Dashboard</h2>
 
+@if (User.IsInRole("Guest"))
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h4>Welcome to Piggy Bank, it looks like you've just registered or left your previous household. <br /> Right now there's not much to do so let's get you moving! Select from the two options below to get started:</h4>
+                <hr />
+                <br />
+            </div>
+        </div>
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-4 offset-1">
+                <!-- small box -->
+                <div class="small-box bg-gradient-primary">
+                    <div class="inner">
+                        <h3>Create <br />New Household</h3>
+
+                        <p>Let's name the house to get started</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-bag"></i>
+                    </div>
+                    <a data-toggle="modal" href="#createHouse" class="small-box-footer">Get Started <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-4 offset-1">
+                <!-- small box -->
+                <div class="small-box bg-gradient-info">
+                    <div class="inner">
+                        <h3>Join Exsisting<br /> Household</h3>
+
+                        <p>Type or Paste the code from your email</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                    </div>
+                    <a data-toggle="modal" href="#joinHouse" class="small-box-footer">Join Now <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+        </div>
+        <!-- /.row -->
+    </div>
+}
+
+
+<!--Modal Section-->
+<!--Guest Modals-->
+
+<!-- Create Household Modal -->
+<div class="modal fade" id="createHouse" tabindex="-1" role="dialog" aria-labelledby="createHouse" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Create A Household</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Create","Households"))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        <h4>Household</h4>
+                        <hr />
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Greeting, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Greeting, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Greeting, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Create" class="btn btn-default" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+    
+<!-- Join Modal -->
+<div class="modal fade" id="joinHouse" tabindex="-1" role="dialog" aria-labelledby="joinHouse" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Input field to paste Invitation.Code with submit button
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
