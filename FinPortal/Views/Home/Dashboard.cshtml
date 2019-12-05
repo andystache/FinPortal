@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-4 offset-1">
                 <!-- small box -->
-                <div class="small-box bg-gradient-primary">
+                <div class="small-box bg-gradient-success">
                     <div class="inner">
                         <h3>Create <br />New Household</h3>
 
@@ -31,7 +31,7 @@
             <!-- ./col -->
             <div class="col-4 offset-1">
                 <!-- small box -->
-                <div class="small-box bg-gradient-info">
+                <div class="small-box bg-gradient-green">
                     <div class="inner">
                         <h3>Join Exsisting<br /> Household</h3>
 
@@ -49,6 +49,10 @@
     </div>
 }
 
+@if (User.IsInRole("HeadOfHouse")) { }
+
+@if (User.IsInRole("Member")) { }
+
 
 <!--Modal Section-->
 <!--Guest Modals-->
@@ -58,19 +62,17 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Create A Household</h5>
+                <h5 class="modal-title">Create A Household</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                @using (Html.BeginForm("Create","Households"))
+                @using (Html.BeginForm("CreateAsync", "Households"))
                 {
                     @Html.AntiForgeryToken()
 
                     <div class="form-horizontal">
-                        <h4>Household</h4>
-                        <hr />
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                         <div class="form-group">
                             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -87,16 +89,13 @@
                                 @Html.ValidationMessageFor(model => model.Greeting, "", new { @class = "text-danger" })
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="col-md-offset-2 col-md-10">
-                                <input type="submit" value="Create" class="btn btn-default" />
-                            </div>
-                        </div>
                     </div>
-                }
-            </div>
+
             <div class="modal-footer">
+                <input type="submit" value="Create" class="btn btn-success" />
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+            }
             </div>
         </div>
     </div>
@@ -107,7 +106,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <h5 class="modal-title">Join Household</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

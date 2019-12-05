@@ -6,13 +6,17 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using FinPortal.Enums;
+using FinPortal.Helpers;
 using FinPortal.Models;
+using Microsoft.AspNet.Identity;
 
 namespace FinPortal.Controllers
 {
     public class TransactionsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private NotificationHelper notificationHelper = new NotificationHelper();
 
         // GET: Transactions
         public ActionResult Index()
@@ -50,12 +54,39 @@ namespace FinPortal.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,BankAccountId,BudgetItemId,OwnerId,TransactionType,Created,Amount,Memo")] Transaction transaction)
+        public ActionResult Create([Bind(Include = "BankAccountId,BudgetItemId,TransactionType,Amount,Memo")] Transaction transaction)
         {
+            var userId = User.Identity.GetUserId();
             if (ModelState.IsValid)
             {
+                transaction.OwnerId = userId;
+                transaction.Created = DateTime.Now;
                 db.Transactions.Add(transaction);
                 db.SaveChanges();
+                if(transaction.TransactionType == TransactionType.Deposit)
+                {
+                    transaction.BankAccount.CurrentBalance += transaction.Amount;
+                    db.SaveChanges();
+                }
+                else
+                {
+                    transaction.BankAccount.CurrentBalance -= transaction.Amount;
+                    transaction.BudgetItem.Budget.CurrentAmount += transaction.Amount;
+                    transaction.BudgetItem.CurrentAmount += transaction.Amount;
+                    db.SaveChanges();
+                    if(transaction.BankAccount.CurrentBalance < 0)
+                    {
+                        notificationHelper.SendOverdraftNotification(userId, transaction.BankAccount.Name);
+                    }
+                    if(transaction.BudgetItem.Budget.CurrentAmount > transaction.BudgetItem.Budget.TargetAmount)
+                    {
+                        notificationHelper.SendOverBudgetNotification(userId, transaction.BudgetItem.Budget.Name);
+                    }
+                    if(transaction.BudgetItem.CurrentAmount > transaction.BudgetItem.TargetAmount)
+                    {
+                        notificationHelper.SendOverBudgetItemNotification(userId, transaction.BudgetItem.Name);
+                    }
+                }
                 return RedirectToAction("Index");
             }
 
@@ -92,7 +123,48 @@ namespace FinPortal.Controllers
         {
             if (ModelState.IsValid)
             {
+                var oldTransaction = db.Transactions.AsNoTracking().FirstOrDefault(t => t.Id == transaction.Id);
+                var userId = transaction.OwnerId;
+
                 db.Entry(transaction).State = EntityState.Modified;
+                db.SaveChanges();
+
+                var newTransaction = db.Transactions.AsNoTracking().FirstOrDefault(t => t.Id == transaction.Id);
+
+                if(oldTransaction.TransactionType == TransactionType.Deposit)
+                {
+                    oldTransaction.BankAccount.CurrentBalance -= oldTransaction.Amount;
+                }
+                else
+                {
+                    oldTransaction.BankAccount.CurrentBalance += oldTransaction.Amount;
+                    oldTransaction.BudgetItem.Budget.CurrentAmount -= oldTransaction.Amount;
+                    oldTransaction.BudgetItem.CurrentAmount -= oldTransaction.Amount;
+                }
+                if (newTransaction.TransactionType == TransactionType.Deposit)
+                {
+                    newTransaction.BankAccount.CurrentBalance += newTransaction.Amount;
+                    db.SaveChanges();
+                }
+                else
+                {
+                    newTransaction.BankAccount.CurrentBalance -= newTransaction.Amount;
+                    newTransaction.BudgetItem.Budget.CurrentAmount += newTransaction.Amount;
+                    newTransaction.BudgetItem.CurrentAmount += newTransaction.Amount;
+                    db.SaveChanges();
+                    if (newTransaction.BankAccount.CurrentBalance < 0)
+                    {
+                        notificationHelper.SendOverdraftNotification(userId, newTransaction.BankAccount.Name);
+                    }
+                    if (transaction.BudgetItem.Budget.CurrentAmount > newTransaction.BudgetItem.Budget.TargetAmount)
+                    {
+                        notificationHelper.SendOverBudgetNotification(userId, newTransaction.BudgetItem.Budget.Name);
+                    }
+                    if (transaction.BudgetItem.CurrentAmount > newTransaction.BudgetItem.TargetAmount)
+                    {
+                        notificationHelper.SendOverBudgetItemNotification(userId, newTransaction.BudgetItem.Name);
+                    }
+                }
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

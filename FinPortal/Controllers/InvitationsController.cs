@@ -6,6 +6,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using System.Threading.Tasks;
 
 namespace FinPortal.Controllers
 {
@@ -13,27 +14,6 @@ namespace FinPortal.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: Invitations
-        public ActionResult Index()
-        {
-            var invitations = db.Invitations.Include(i => i.Household);
-            return View(invitations.ToList());
-        }
-
-        // GET: Invitations/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Invitation invitation = db.Invitations.Find(id);
-            if (invitation == null)
-            {
-                return HttpNotFound();
-            }
-            return View(invitation);
-        }
         [Authorize(Roles = "HeadOfHouse")]
         // GET: Invitations/Create
         public ActionResult Create()
@@ -53,9 +33,10 @@ namespace FinPortal.Controllers
         // POST: Invitations/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "HeadOfHouse")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async System.Threading.Tasks.Task<ActionResult> CreateAsync([Bind(Include = "HouseholdId,TTL,RecipientEmail")] Invitation invitation)
+        public async Task<ActionResult> CreateAsync([Bind(Include = "HouseholdId,TTL,RecipientEmail")] Invitation invitation)
         {
             if (ModelState.IsValid)
             {
@@ -74,38 +55,6 @@ namespace FinPortal.Controllers
             return View(invitation);
         }
 
-        // GET: Invitations/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Invitation invitation = db.Invitations.Find(id);
-            if (invitation == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", invitation.HouseholdId);
-            return View(invitation);
-        }
-
-        // POST: Invitations/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,HouseholdId,Body,IsValid,Created,TTL,RecipientEmail,Code")] Invitation invitation)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(invitation).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", invitation.HouseholdId);
-            return View(invitation);
-        }
 
         // GET: Invitations/Delete/5
         public ActionResult Delete(int? id)

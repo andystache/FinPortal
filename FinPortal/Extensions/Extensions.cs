@@ -1,4 +1,5 @@
-﻿using FinPortal.Models;
+﻿using FinPortal.Enums;
+using FinPortal.Models;
 using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,59 @@ namespace FinPortal.Extensions
 
             var svc = new PersonalEmail();
             await svc.SendAsync(emailMessage);
+        }
+    }
+
+    public static class TransactionExtensions 
+    {
+        public static ApplicationDbContext db = new ApplicationDbContext();
+
+        public static void UpdateBalances(this Transaction transaction)
+        {
+            UpdateBankBalance(transaction);
+            UpdateBudgetBalance(transaction);
+            UpdateBudgetItemBalance(transaction);
+        }
+
+        private static void UpdateBankBalance(Transaction transaction)
+        {
+            var bank = db.BankAccounts.Find(transaction.BankAccountId);
+            if(transaction.TransactionType == TransactionType.Deposit)
+            {
+                bank.CurrentBalance += transaction.Amount;
+            }
+            else
+            {
+                bank.CurrentBalance -= transaction.Amount;
+            }
+            db.SaveChanges();
+        }
+
+        private static void UpdateBudgetBalance(Transaction transaction)
+        {
+            if(transaction.TransactionType == TransactionType.Deposit || transaction.BudgetItemId == null)
+            {
+                return;
+            }
+            else
+            {
+                var budget = transaction.BudgetItem.Budget;
+                budget.CurrentAmount -= transaction.Amount;
+                db.SaveChanges();
+            }
+        }
+
+        private static void UpdateBudgetItemBalance(Transaction transaction)
+        {
+            if(transaction.TransactionType == TransactionType.Deposit || transaction.BudgetItem == null)
+            {
+                return;
+            }
+            else
+            {
+                transaction.BudgetItem.CurrentAmount -= transaction.Amount;
+                db.SaveChanges();
+            }
         }
     }
 }

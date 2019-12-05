@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "ExitDenied";
+}
+
+<h2>ExitDenied</h2>
+
+<div class="row">
+    <div class="col-md-12 text-center h3">
+        <p id="message">@Html.Raw(TempData["Message"])</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 text-center">
+        @Html.ActionLink("Return to Dashboard", "Dashboard", "Home", null, new { @class = "btn btn-success btn-wide"})
+    </div>
+</div>
+
+<hr style="border:2em solid black" />
+
+<div class="row">
+    <div class="col-md-12 text center">
+        @Html.ActionLink("Choose New Head of Household", "ChangeHead", null, new { @class="btn btn-success btn-wide"})
+    </div>
+</div>

@@ -19,9 +19,9 @@ namespace FinPortal.Migrations
             #region Role Creation
             var roleManager = new RoleManager<IdentityRole>(
                new RoleStore<IdentityRole>(context));
-            if (!context.Roles.Any(r => r.Name == "HeadofHouse"))
+            if (!context.Roles.Any(r => r.Name == "HeadOfHouse"))
             {
-                roleManager.Create(new IdentityRole { Name = "HeadofHouse" });
+                roleManager.Create(new IdentityRole { Name = "HeadOfHouse" });
             }
             if (!context.Roles.Any(r => r.Name == "Member"))
             {

@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using FinPortal.Models;
+using Microsoft.AspNet.Identity;
 
 namespace FinPortal.Controllers
 {
@@ -49,10 +50,17 @@ namespace FinPortal.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,HouseholdId,OwnerId,Created,Name,TargetAmount,CurrentAmount")] Budget budget)
+        public ActionResult Create([Bind(Include = "Name,TargetAmount")] Budget budget)
         {
             if (ModelState.IsValid)
             {
+                var userId = User.Identity.GetUserId();
+                var user = db.Users.Find(userId);
+                budget.HouseholdId = (int)user.HouseholdId;
+                budget.OwnerId = userId;
+                budget.Created = DateTime.Now;
+                budget.CurrentAmount = 0;
+
                 db.Budgets.Add(budget);
                 db.SaveChanges();
                 return RedirectToAction("Index");

@@ -11,6 +11,7 @@ namespace FinPortal.Models
         public string Name { get; set; }
         public string Greeting { get; set; }
         public DateTime Created { get; set; }
+        public bool IsDeleted { get; set; }
 
         public Household()
         {

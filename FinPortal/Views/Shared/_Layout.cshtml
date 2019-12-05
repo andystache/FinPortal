@@ -33,7 +33,9 @@
 <body class="hold-transition sidebar-mini layout-fixed">
     @{
         var db = new ApplicationDbContext();
-        var user = db.Users.Find(User.Identity.GetUserId());
+        var userId = User.Identity.GetUserId();
+        var user = db.Users.Find(userId);
+        var houseHelp = new HouseholdHelper();
     }
     <div class="wrapper">
 
@@ -107,7 +109,7 @@
                         {
                             <li class="nav-item">
                                 <a href="pages/widgets.html" class="nav-link">
-                                    <i class="nav-icon fas fa-th"></i>
+                                    <i class="nav-icon fas fa-user-injured"></i>
                                     <p>
                                         My Profile
                                         <span class="right badge badge-danger">New</span>
@@ -118,28 +120,82 @@
 
                         @if (User.IsInRole("HeadOfHouse"))
                         {
-                            <li class="nav-item">
-                                <a href="pages/gallery.html" class="nav-link">
-                                    <i class="nav-icon far fa-image"></i>
-                                    <p>
-                                        Gallery
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="pages/gallery.html" class="nav-link">
-                                    <i class="nav-icon far fa-image"></i>
-                                    <p>
-                                        Gallery
-                                    </p>
-                                </a>
-                            </li>
+                            if (!houseHelp.IsHouseholdConfigured(userId))
+                            {
+                                <li class="nav-item">
+                                    <a href="/Households/ConfigureHouse" class="nav-link">
+                                        <i class="nav-icon far fa-image"></i>
+                                        <p>
+                                            Configure Household
+                                        </p>
+                                    </a>
+                                </li>
+                            }
+
+
                             <li class="nav-item">
                                 <a href="pages/widgets.html" class="nav-link">
-                                    <i class="nav-icon fas fa-th"></i>
+                                    <i class="nav-icon fas fa-user-friends"></i>
                                     <p>
-                                        Widgets
+                                        My Profile
                                         <span class="right badge badge-danger">New</span>
+                                    </p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="/Home/Dashboard" class="nav-link">
+                                    <i class="nav-icon fa fa-biohazard"></i>
+                                    <p>
+                                        Dashboard
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/Invitations/Create" class="nav-link">
+                                    <i class="nav-icon fa fa-biohazard"></i>
+                                    <p>
+                                        Create Invitation
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/BankAccounts/Index" class="nav-link">
+                                    <i class="nav-icon fa fa-biohazard"></i>
+                                    <p>
+                                        Manage Accounts
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/Budgets/Index" class="nav-link">
+                                    <i class="nav-icon fa fa-biohazard"></i>
+                                    <p>
+                                        Manage Budgets
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/BudgetItems/Index" class="nav-link">
+                                    <i class="nav-icon fa fa-biohazard"></i>
+                                    <p>
+                                        Manage Budget Items
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/Transactions/Index" class="nav-link">
+                                    <i class="nav-icon fa fa-biohazard"></i>
+                                    <p>
+                                        Manage Transaction
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("LeaveAsync", "Households")" class="nav-link">
+                                    <i class="nav-icon fa fa-door-open"></i>
+                                    <p>
+                                        Leave Household
                                     </p>
                                 </a>
                             </li>
@@ -148,27 +204,52 @@
                         @if (User.IsInRole("Member"))
                         {
                             <li class="nav-item">
-                                <a href="pages/gallery.html" class="nav-link">
-                                    <i class="nav-icon far fa-image"></i>
-                                    <p>
-                                        Gallery
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="pages/gallery.html" class="nav-link">
-                                    <i class="nav-icon far fa-image"></i>
-                                    <p>
-                                        Gallery
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
                                 <a href="pages/widgets.html" class="nav-link">
-                                    <i class="nav-icon fas fa-th"></i>
+                                    <i class="nav-icon fas fa-user-alt"></i>
                                     <p>
-                                        Widgets
+                                        My Profile
                                         <span class="right badge badge-danger">New</span>
+                                    </p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="Home/Dashboard" class="nav-link">
+                                    <i class="nav-icon fa fa-biohazard"></i>
+                                    <p>
+                                        Dashboard
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="BankAccounts/Index" class="nav-link">
+                                    <i class="nav-icon fa fa-biohazard"></i>
+                                    <p>
+                                        Manage Accounts
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="BudgetItems/Index" class="nav-link">
+                                    <i class="nav-icon fa fa-biohazard"></i>
+                                    <p>
+                                        Manage Budget Items
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="Transactions/Index" class="nav-link">
+                                    <i class="nav-icon fa fa-biohazard"></i>
+                                    <p>
+                                        Manage Transaction
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("LeaveAsync", "Households")" class="nav-link">
+                                    <i class="nav-icon fa fa-door-open"></i>
+                                    <p>
+                                        Leave Household
                                     </p>
                                 </a>
                             </li>

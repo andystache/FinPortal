@@ -9,7 +9,6 @@ namespace FinPortal.ViewModels
     {
         public string Name { get; set; }
         public string Greeting { get; set; }
-        public string UserId { get; set; }
         public Guid Code { get; set; }
     }
 }

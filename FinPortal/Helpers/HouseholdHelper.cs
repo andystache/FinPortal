@@ -11,37 +11,19 @@ namespace FinPortal.Helpers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        public bool IsUserInHouse(string userId, int householdId)
+        public bool IsHouseholdConfigured(string userId)
         {
-            var household = db.Households.Find(householdId);
-            var flag = household.Users.Any(u => u.Id == userId);
-            return (flag);
-        }
-
-
-        public void AddUserToHouse(string userId, int householdId)
-        {
-            if (!IsUserInHouse(userId, householdId))
+            var householdId = db.Users.Find(userId).HouseholdId ?? 0;
+            if (householdId == 0)
             {
-                Household house = db.Households.Find(householdId);
-                var newUser = db.Users.Find(userId);
-
-                house.Users.Add(newUser);
-                db.SaveChanges();
+                return false;
             }
-        }
+            var houseHold = db.Households.Find(householdId);
+            var acctCnt = houseHold.BankAccounts.Count();
+            var budgetCnt = houseHold.Budgets.Count();
+            var itemCnt = houseHold.Budgets.SelectMany(b => b.BudgetItems).Count();
 
-        public void RemoveUserFromHouse(string userId, int householdId)
-        {
-            if (IsUserInHouse(userId, householdId))
-            {
-                Household house = db.Households.Find(householdId);
-                var delUser = db.Users.Find(userId);
-
-                house.Users.Remove(delUser);
-                db.Entry(house).State = EntityState.Modified;
-                db.SaveChanges();
-            }
+            return (acctCnt > 0 && budgetCnt > 0 && itemCnt > 0);
         }
     }
 }
