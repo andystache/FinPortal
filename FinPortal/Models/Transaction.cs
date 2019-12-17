@@ -14,8 +14,9 @@ namespace FinPortal.Models
         public string OwnerId { get; set; }
         public TransactionType TransactionType { get; set; }
         public DateTime Created { get; set; }
-        public int Amount { get; set; }
+        public decimal Amount { get; set; }
         public string Memo { get; set; }
+        public bool IsDeleted { get; set; }
         public virtual BankAccount BankAccount { get; set; }
         public virtual BudgetItem BudgetItem { get; set; }
         public virtual ApplicationUser Owner { get; set; }

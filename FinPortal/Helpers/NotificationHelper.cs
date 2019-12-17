@@ -60,8 +60,8 @@ namespace FinPortal.Helpers
 
         }
 
-    
-    public void SendOverdraftNotification(string user, string account)
+
+        public void SendOverdraftNotification(string user, string account)
         {
             var recipient = db.Users.Find(user);
             var notification = new Notification
@@ -72,6 +72,22 @@ namespace FinPortal.Helpers
                 Created = DateTime.Now,
                 Subject = $"Overdraft Notification",
                 Body = $"You have overdrafted one of your {account} account"
+            };
+            db.Notifications.Add(notification);
+            db.SaveChanges();
+
+        }
+        public void SendBalanceWarningNotification(string user, string account)
+        {
+            var recipient = db.Users.Find(user);
+            var notification = new Notification
+            {
+                IsRead = false,
+                HouseholdId = (int)recipient.HouseholdId,
+                RecipientId = recipient.Id,
+                Created = DateTime.Now,
+                Subject = $"Balance Warning Notification",
+                Body = $"The account {account} is below the warning threshold."
             };
             db.Notifications.Add(notification);
             db.SaveChanges();

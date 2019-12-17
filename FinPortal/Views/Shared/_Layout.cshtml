@@ -50,30 +50,33 @@
 
                     @Html.ActionLink("Log Out", "CustomLogOut", "Account")
                 </li>
+                <!-- Notifications Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell"></i>
-                        <span class="badge badge-warning navbar-badge">15</span>
+                        <span class="badge badge-warning navbar-badge">@NotificationHelper.GetUnreadNotifications().Count()</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <span class="dropdown-item dropdown-header">15 Notifications</span>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-envelope mr-2"></i> 4 new messages
-                            <span class="float-right text-muted text-sm">3 mins</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-users mr-2"></i> 8 friend requests
-                            <span class="float-right text-muted text-sm">12 hours</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-file mr-2"></i> 3 new reports
-                            <span class="float-right text-muted text-sm">2 days</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+                        <span class="dropdown-item dropdown-header">Unread Notifications</span>
+                        <ul>
+                            @foreach (var unreadNotification in NotificationHelper.GetUnreadNotifications())
+                            {
+
+                            <li>
+                                @using (Html.BeginForm("Dismiss", "Home", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.Hidden("Id", unreadNotification.Id)
+                                    <span class="time">Created: @unreadNotification.Created.ToString("MMM dd, yyyy")</span><hr />
+                                    <span class="message">@unreadNotification.Subject</span><hr />
+                                    <span class="message">@unreadNotification.Body</span><hr />
+                                    <button type="submit">Dismiss</button>
+
+                                    <div class="dropdown-divider"></div>
+                                }
+                            </li>
+                            }
+                        </ul>
                     </div>
                 </li>
             </ul>
@@ -131,21 +134,9 @@
                                     </a>
                                 </li>
                             }
-
-
-                            <li class="nav-item">
-                                <a href="pages/widgets.html" class="nav-link">
-                                    <i class="nav-icon fas fa-user-friends"></i>
-                                    <p>
-                                        My Profile
-                                        <span class="right badge badge-danger">New</span>
-                                    </p>
-                                </a>
-                            </li>
-
                             <li class="nav-item">
                                 <a href="/Home/Dashboard" class="nav-link">
-                                    <i class="nav-icon fa fa-biohazard"></i>
+                                    <i class="nav-icon fa fa-tachometer-alt"></i>
                                     <p>
                                         Dashboard
                                     </p>
@@ -153,7 +144,7 @@
                             </li>
                             <li class="nav-item">
                                 <a href="/Invitations/Create" class="nav-link">
-                                    <i class="nav-icon fa fa-biohazard"></i>
+                                    <i class="nav-icon fa fa-envelope-open-text"></i>
                                     <p>
                                         Create Invitation
                                     </p>
@@ -161,7 +152,7 @@
                             </li>
                             <li class="nav-item">
                                 <a href="/BankAccounts/Index" class="nav-link">
-                                    <i class="nav-icon fa fa-biohazard"></i>
+                                    <i class="nav-icon fa fa-university"></i>
                                     <p>
                                         Manage Accounts
                                     </p>
@@ -169,7 +160,7 @@
                             </li>
                             <li class="nav-item">
                                 <a href="/Budgets/Index" class="nav-link">
-                                    <i class="nav-icon fa fa-biohazard"></i>
+                                    <i class="nav-icon fa fa-piggy-bank"></i>
                                     <p>
                                         Manage Budgets
                                     </p>
@@ -177,7 +168,7 @@
                             </li>
                             <li class="nav-item">
                                 <a href="/BudgetItems/Index" class="nav-link">
-                                    <i class="nav-icon fa fa-biohazard"></i>
+                                    <i class="nav-icon fa fa-sitemap"></i>
                                     <p>
                                         Manage Budget Items
                                     </p>
@@ -185,7 +176,7 @@
                             </li>
                             <li class="nav-item">
                                 <a href="/Transactions/Index" class="nav-link">
-                                    <i class="nav-icon fa fa-biohazard"></i>
+                                    <i class="nav-icon fa fa-credit-card"></i>
                                     <p>
                                         Manage Transaction
                                     </p>

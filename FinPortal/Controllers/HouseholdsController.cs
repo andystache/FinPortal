@@ -114,7 +114,6 @@ namespace FinPortal.Controllers
                     OwnerId = userId,
                     Created = DateTime.Now,
                     Name = model.BudgetName,
-                    TargetAmount = model.TargetAmount,
                     CurrentAmount = 0
                 };
                 db.Budgets.Add(newBudget);
@@ -284,7 +283,7 @@ namespace FinPortal.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Household household = db.Households.Find(id);
-            db.Households.Remove(household);
+            household.IsDeleted = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }

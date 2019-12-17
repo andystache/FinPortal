@@ -11,8 +11,9 @@ namespace FinPortal.Models
         public int BudgetId { get; set; }
         public DateTime Created { get; set; }
         public string Name { get; set; }
-        public int TargetAmount { get; set; }
-        public int CurrentAmount { get; set; }
+        public decimal TargetAmount { get; set; }
+        public decimal CurrentAmount { get; set; }
+        public bool IsDeleted { get; set; }
         public virtual Budget Budget { get; set; }
 
         public BudgetItem()

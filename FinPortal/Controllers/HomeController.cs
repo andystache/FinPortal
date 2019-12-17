@@ -1,4 +1,5 @@
-﻿using FinPortal.ViewModels;
+﻿using FinPortal.Models;
+using FinPortal.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace FinPortal.Controllers
 {
     public class HomeController : Controller
     {
+        private ApplicationDbContext db = new ApplicationDbContext();
         public ActionResult Dashboard()
         {
             return View(new DashboardVM());
@@ -19,18 +21,14 @@ namespace FinPortal.Controllers
             return View();
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
 
-            return View();
+        public ActionResult Dismiss(int id)
+        {
+            var notification = db.Notifications.Find(id);
+            notification.IsRead = true;
+            db.SaveChanges();
+            return RedirectToAction("Dashboard", "Home");
         }
 
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
     }
 }

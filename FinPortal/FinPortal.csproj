@@ -167,10 +167,12 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="ChartModels\ChartJSData.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BankAccountsController.cs" />
     <Compile Include="Controllers\BudgetItemsController.cs" />
     <Compile Include="Controllers\BudgetsController.cs" />
+    <Compile Include="Controllers\ChartsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HouseholdsController.cs" />
     <Compile Include="Controllers\InvitationsController.cs" />
@@ -254,6 +256,7 @@
     <Content Include="fonts\webfonts\fa-solid-900.ttf" />
     <Content Include="fonts\webfonts\fa-solid-900.woff" />
     <Content Include="fonts\webfonts\fa-solid-900.woff2" />
+    <None Include="Properties\PublishProfiles\piggybankfinancial - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\Chart.min.js" />
     <Content Include="Scripts\daterangepicker.js" />
@@ -343,6 +346,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Charts\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

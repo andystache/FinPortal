@@ -8,6 +8,7 @@ namespace FinPortal.Enums
     public enum TransactionType
     {
         Deposit,
-        Withdrawal
+        Withdrawal,
+        Transfer
     }
 }

@@ -1,4 +1,5 @@
 ﻿using FinPortal.Enums;
+using FinPortal.Helpers;
 using FinPortal.Models;
 using Microsoft.AspNet.Identity.Owin;
 using System;
@@ -27,7 +28,7 @@ namespace FinPortal.Extensions
         {
             var Url = new UrlHelper(HttpContext.Current.Request.RequestContext);
             var callbackUrl = Url.Action("AcceptInvitation", "Account", new { recipientEmail = invitation.RecipientEmail, code = invitation.Code }, protocol: HttpContext.Current.Request.Url.Scheme);
-            var from = $"Piggy Bank<{WebConfigurationManager.AppSettings["emailfrom"]}>";
+            var from = $"Piggy Bank <{WebConfigurationManager.AppSettings["emailfrom"]}>";
 
             var emailMessage = new MailMessage(from, invitation.RecipientEmail)
             {
@@ -44,6 +45,26 @@ namespace FinPortal.Extensions
     public static class TransactionExtensions 
     {
         public static ApplicationDbContext db = new ApplicationDbContext();
+        public static NotificationHelper notificationHelper = new NotificationHelper();
+
+        public static void ReconcileDelete(this Transaction transaction)
+        {
+            ReconcileBankBalance(transaction);
+            ReconcileBudgetBalance(transaction);
+            ReconcileBudgetItemBalance(transaction);
+        }
+
+        public static void ReconcileEdit(this Transaction newTransaction, Transaction oldTransaction)
+        {
+            ReconcileBankBalance(oldTransaction);
+            ReconcileBudgetBalance(oldTransaction);
+            ReconcileBudgetItemBalance(oldTransaction);
+
+            UpdateBankBalance(newTransaction);
+            UpdateBudgetBalance(newTransaction);
+            UpdateBudgetItemBalance(newTransaction);
+
+        }
 
         public static void UpdateBalances(this Transaction transaction)
         {
@@ -62,35 +83,80 @@ namespace FinPortal.Extensions
             else
             {
                 bank.CurrentBalance -= transaction.Amount;
+                if (bank.CurrentBalance < bank.WarningBalance && bank.CurrentBalance > 0)
+                    notificationHelper.SendBalanceWarningNotification(transaction.OwnerId, bank.Name);
+                if(bank.CurrentBalance < 0)
+                    notificationHelper.SendOverdraftNotification(transaction.OwnerId, bank.Name);
             }
             db.SaveChanges();
         }
 
         private static void UpdateBudgetBalance(Transaction transaction)
         {
+            var budgetItem = db.BudgetItems.Find(transaction.BudgetItemId);
+            var budget = db.Budgets.Find(budgetItem.BudgetId);
+            var targetAmount = db.BudgetItems.Where(bI => bI.Budget == budget).Select(bI => bI.TargetAmount).Sum();
             if(transaction.TransactionType == TransactionType.Deposit || transaction.BudgetItemId == null)
             {
                 return;
             }
-            else
-            {
-                var budget = transaction.BudgetItem.Budget;
-                budget.CurrentAmount -= transaction.Amount;
-                db.SaveChanges();
-            }
+            budget.CurrentAmount += transaction.Amount;
+            if (budget.CurrentAmount > targetAmount)
+                notificationHelper.SendOverBudgetNotification(transaction.OwnerId, budget.Name);
+            db.SaveChanges();
         }
 
         private static void UpdateBudgetItemBalance(Transaction transaction)
         {
-            if(transaction.TransactionType == TransactionType.Deposit || transaction.BudgetItem == null)
-            {
+            var budgetItem = db.BudgetItems.Find(transaction.BudgetItemId);
+            if (transaction.TransactionType == TransactionType.Deposit || budgetItem == null) 
+            { 
                 return;
+            }
+            budgetItem.CurrentAmount += transaction.Amount;
+            if (budgetItem.CurrentAmount > budgetItem.TargetAmount)
+                notificationHelper.SendOverBudgetItemNotification(transaction.OwnerId, budgetItem.Name);
+            db.SaveChanges();
+        }
+
+        private static void ReconcileBankBalance(Transaction transaction) 
+        {
+            var bank = db.BankAccounts.Find(transaction.BankAccountId);
+            if (transaction.TransactionType == TransactionType.Deposit)
+            {
+                bank.CurrentBalance -= transaction.Amount;
             }
             else
             {
-                transaction.BudgetItem.CurrentAmount -= transaction.Amount;
-                db.SaveChanges();
+                bank.CurrentBalance += transaction.Amount;
             }
+            db.SaveChanges();
+
         }
+        private static void ReconcileBudgetBalance(Transaction transaction) 
+        {
+            var budgetItem = db.BudgetItems.Find(transaction.BudgetItemId);
+            var budget = db.Budgets.Find(budgetItem.BudgetId);
+            if (transaction.TransactionType == TransactionType.Deposit || transaction.BudgetItemId == null)
+            {
+                return;
+            }
+            budget.CurrentAmount -= transaction.Amount;
+            db.SaveChanges();
+
+        }
+        private static void ReconcileBudgetItemBalance(Transaction transaction) 
+        {
+            var budgetItem = db.BudgetItems.Find(transaction.BudgetItemId);
+            if (transaction.TransactionType == TransactionType.Deposit || transaction.BudgetItem == null)
+            {
+                return;
+            }
+            budgetItem.CurrentAmount -= transaction.Amount;
+            db.SaveChanges();
+
+        }
+
+        //private static void TransferFunds(Transaction transaction)
     }
 }

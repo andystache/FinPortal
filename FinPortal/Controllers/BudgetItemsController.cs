@@ -39,7 +39,7 @@ namespace FinPortal.Controllers
         // GET: BudgetItems/Create
         public ActionResult Create()
         {
-            ViewBag.BudgetId = new SelectList(db.Budgets, "Id", "OwnerId");
+            ViewBag.BudgetId = new SelectList(db.Budgets, "Id", "Name");
             return View();
         }
 
@@ -56,10 +56,11 @@ namespace FinPortal.Controllers
                 budgetItem.CurrentAmount = 0;
                 db.BudgetItems.Add(budgetItem);
                 db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
 
-            ViewBag.BudgetId = new SelectList(db.Budgets, "Id", "OwnerId", budgetItem.BudgetId);
+            ViewBag.BudgetId = new SelectList(db.Budgets, "Id", "Name", budgetItem.BudgetId);
             return View(budgetItem);
         }
 
@@ -75,7 +76,7 @@ namespace FinPortal.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.BudgetId = new SelectList(db.Budgets, "Id", "OwnerId", budgetItem.BudgetId);
+            ViewBag.BudgetId = new SelectList(db.Budgets, "Id", "Name", budgetItem.BudgetId);
             return View(budgetItem);
         }
 
@@ -88,11 +89,13 @@ namespace FinPortal.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 db.Entry(budgetItem).State = EntityState.Modified;
                 db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
-            ViewBag.BudgetId = new SelectList(db.Budgets, "Id", "OwnerId", budgetItem.BudgetId);
+            ViewBag.BudgetId = new SelectList(db.Budgets, "Id", "Name", budgetItem.BudgetId);
             return View(budgetItem);
         }
 
@@ -117,7 +120,7 @@ namespace FinPortal.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             BudgetItem budgetItem = db.BudgetItems.Find(id);
-            db.BudgetItems.Remove(budgetItem);
+            budgetItem.IsDeleted = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }

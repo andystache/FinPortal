@@ -14,8 +14,10 @@ namespace FinPortal.Models
         public DateTime Created { get; set; }
         public string Name { get; set; }
         public AccountType AccountType { get; set; }
-        public int StartingBalance { get; set; }
-        public int CurrentBalance { get; set; }
+        public decimal StartingBalance { get; set; }
+        public decimal CurrentBalance { get; set; }
+        public decimal WarningBalance { get; set; }
+        public bool IsDeleted { get; set; }
 
         public virtual Household Household { get; set; }
         public virtual ApplicationUser Owner { get; set; }

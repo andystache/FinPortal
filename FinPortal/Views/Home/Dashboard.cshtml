@@ -33,7 +33,7 @@
                 <!-- small box -->
                 <div class="small-box bg-gradient-green">
                     <div class="inner">
-                        <h3>Join Exsisting<br /> Household</h3>
+                        <h3>Join Existing<br /> Household</h3>
 
                         <p>Type or Paste the code from your email</p>
                     </div>
@@ -49,9 +49,88 @@
     </div>
 }
 
-@if (User.IsInRole("HeadOfHouse")) { }
+@if (User.IsInRole("HeadOfHouse") || User.IsInRole("Member")) 
+{
+<div class="container-fluid">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+        <div class="col-lg-4 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>$XXX.XX</h3>
 
-@if (User.IsInRole("Member")) { }
+                    <p>Current Balance</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-university"></i>
+                </div>
+                <a href="/BankAccounts/Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-4 col-6">
+            <!-- small box -->
+            <div class="small-box bg-gradient-success">
+                <div class="inner">
+                    <h3>$XXX.XX</h3>
+
+                    <p>Current Budgets</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-piggy-bank"></i>
+                </div>
+                <a href="/Budgets/Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-4 col-6">
+            <!-- small box -->
+            <div class="small-box bg-olive">
+                <div class="inner">
+                    <h3>$XXX.XX</h3>
+
+                    <p>Last Transaction</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-credit-card"></i>
+                </div>
+                <a href="/Transactions/Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+        </div>
+        <!-- ./col -->
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="row">
+                <div class="col no-gutters">
+                    New Withdrawal
+                </div>
+            </div>
+            <div class="row">
+                <div class="col no-gutters">
+                    New Deposit
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            Line Chart of Spending -Multi tab if possible
+        </div>
+        <div class="col-md-5">
+            Donut of Budgets
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Side tabbed content panel with per budget progress bars
+        </div>
+    </div>
+</div>
+}
+
 
 
 <!--Modal Section-->

@@ -50,7 +50,7 @@ namespace FinPortal.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Name,TargetAmount")] Budget budget)
+        public ActionResult Create([Bind(Include = "Name")] Budget budget)
         {
             if (ModelState.IsValid)
             {
@@ -93,7 +93,7 @@ namespace FinPortal.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,HouseholdId,OwnerId,Created,Name,TargetAmount,CurrentAmount")] Budget budget)
+        public ActionResult Edit([Bind(Include = "Id,HouseholdId,OwnerId,Created,Name,CurrentAmount")] Budget budget)
         {
             if (ModelState.IsValid)
             {
@@ -127,7 +127,7 @@ namespace FinPortal.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Budget budget = db.Budgets.Find(id);
-            db.Budgets.Remove(budget);
+            budget.IsDeleted = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }
