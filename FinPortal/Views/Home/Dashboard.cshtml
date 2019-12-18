@@ -23,7 +23,7 @@
                         <p>Let's name the house to get started</p>
                     </div>
                     <div class="icon">
-                        <i class="ion ion-bag"></i>
+                        <i class="fa fa-home"></i>
                     </div>
                     <a data-toggle="modal" href="#createHouse" class="small-box-footer">Get Started <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
@@ -38,7 +38,7 @@
                         <p>Type or Paste the code from your email</p>
                     </div>
                     <div class="icon">
-                        <i class="ion ion-stats-bars"></i>
+                        <i class="fa fa-user-plus"></i>
                     </div>
                     <a data-toggle="modal" href="#joinHouse" class="small-box-footer">Join Now <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
@@ -49,93 +49,110 @@
     </div>
 }
 
-@if (User.IsInRole("HeadOfHouse") || User.IsInRole("Member")) 
+@if (User.IsInRole("HeadOfHouse") || User.IsInRole("Member"))
 {
-<div class="container-fluid">
-    <!-- Small boxes (Stat box) -->
-    <div class="row">
-        <div class="col-lg-4 col-6">
-            <!-- small box -->
-            <div class="small-box bg-success">
-                <div class="inner">
-                    <h3>$XXX.XX</h3>
+    <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-lg-4 col-6">
+                <!-- small box -->
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>$@Html.DisplayFor(m => m.BankBalance)</h3>
 
-                    <p>Current Balance</p>
+                        <p>Current Balance</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-university"></i>
+                    </div>
+                    <a href="/BankAccounts/Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
-                <div class="icon">
-                    <i class="fa fa-university"></i>
-                </div>
-                <a href="/BankAccounts/Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-4 col-6">
-            <!-- small box -->
-            <div class="small-box bg-gradient-success">
-                <div class="inner">
-                    <h3>$XXX.XX</h3>
+            <!-- ./col -->
+            <div class="col-lg-4 col-6">
+                <!-- small box -->
+                <div class="small-box bg-gradient-success">
+                    <div class="inner">
+                        <h3>$@Html.DisplayFor(m => m.BudgetTotal)</h3>
 
-                    <p>Current Budgets</p>
+                        <p>Household Budget Total</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-piggy-bank"></i>
+                    </div>
+                    <a href="/Budgets/Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
-                <div class="icon">
-                    <i class="fa fa-piggy-bank"></i>
-                </div>
-                <a href="/Budgets/Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-4 col-6">
-            <!-- small box -->
-            <div class="small-box bg-olive">
-                <div class="inner">
-                    <h3>$XXX.XX</h3>
+            <!-- ./col -->
+            <div class="col-lg-4 col-6">
+                <!-- small box -->
+                <div class="small-box bg-olive">
+                    <div class="inner">
+                        <h3>$@Html.DisplayFor(m => m.LastTransaction)</h3>
 
-                    <p>Last Transaction</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-credit-card"></i>
-                </div>
-                <a href="/Transactions/Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-6">
-        </div>
-        <!-- ./col -->
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <div class="row">
-                <div class="col no-gutters">
-                    New Withdrawal
+                        <p>Last Transaction</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-credit-card"></i>
+                    </div>
+                    <a href="/Transactions/Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
-            <div class="row">
-                <div class="col no-gutters">
-                    New Deposit
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+            </div>
+            <!-- ./col -->
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="row">
+                    <div class="col no-gutters">
+                        <div class="small-box bg-orange" data-toggle="modal" href="#createWithdrawal">
+                            <div class="inner">
+                                <h4>New Withdrawal</h4>
+
+                                <p>Payments</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-funnel-dollar"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col no-gutters">
+                        <div class="small-box bg-warning" data-toggle="modal" href="#createDeposit">
+                            <div class="inner">
+                                <h4>New Deposit</h4>
+
+                                <p>Add money to account</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-hand-holding-usd"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div class="col-md-5">
+                Line Chart of Spending -Multi tab if possible
+            </div>
+            <div class="col-md-5">
+                Donut of Budgets
+            </div>
         </div>
-        <div class="col-md-5">
-            Line Chart of Spending -Multi tab if possible
-        </div>
-        <div class="col-md-5">
-            Donut of Budgets
+        <div class="row">
+            <div class="col">
+                Side tabbed content panel with per budget progress bars
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col">
-            Side tabbed content panel with per budget progress bars
-        </div>
-    </div>
-</div>
 }
 
 
 
 <!--Modal Section-->
 <!--Guest Modals-->
-
 <!-- Create Household Modal -->
 <div class="modal fade" id="createHouse" tabindex="-1" role="dialog" aria-labelledby="createHouse" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -170,16 +187,16 @@
                         </div>
                     </div>
 
-            <div class="modal-footer">
-                <input type="submit" value="Create" class="btn btn-success" />
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-            </div>
-            }
+                    <div class="modal-footer">
+                        <input type="submit" value="Create" class="btn btn-success" />
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                }
             </div>
         </div>
     </div>
 </div>
-    
+
 <!-- Join Modal -->
 <div class="modal fade" id="joinHouse" tabindex="-1" role="dialog" aria-labelledby="joinHouse" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -192,6 +209,130 @@
             </div>
             <div class="modal-body">
                 Input field to paste Invitation.Code with submit button
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Deposit Modal -->
+<div class="modal fade" id="createDeposit" tabindex="-1" role="dialog" aria-labelledby="createDeposit" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Deposit</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("CreateDeposit", "Transactions"))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            <label class="control-label col" for="Bank Account">Bank Account</label>
+                            <div class="col-md-10">
+                                @Html.DropDownList("BankAccountId", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.BankAccountId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Memo, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Memo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Memo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Create" class="btn btn-success" />
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Create Withdrawal Modal -->
+<div class="modal fade" id="createWithdrawal" tabindex="-1" role="dialog" aria-labelledby="createWithdrawal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Withdrawal</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("CreateWithdrawal", "Transactions"))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            <label class="control-label col" for="Bank Account">Bank Account</label>
+                            <div class="col-md-10">
+                                @Html.DropDownList("BankAccountId", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.BankAccountId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col" for="Budget Item">Budget Item</label>
+                            <div class="col-md-10">
+                                @Html.DropDownList("BudgetItemId", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.BudgetItemId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Memo, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Memo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Memo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Create" class="btn btn-success" />
+                            </div>
+                        </div>
+                    </div>
+                }
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>

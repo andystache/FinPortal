@@ -93,13 +93,13 @@ namespace FinPortal.Extensions
 
         private static void UpdateBudgetBalance(Transaction transaction)
         {
-            var budgetItem = db.BudgetItems.Find(transaction.BudgetItemId);
-            var budget = db.Budgets.Find(budgetItem.BudgetId);
-            var targetAmount = db.BudgetItems.Where(bI => bI.Budget == budget).Select(bI => bI.TargetAmount).Sum();
             if(transaction.TransactionType == TransactionType.Deposit || transaction.BudgetItemId == null)
             {
                 return;
             }
+            var budgetItem = db.BudgetItems.Find(transaction.BudgetItemId);
+            var budget = db.Budgets.Find(budgetItem.BudgetId);
+            var targetAmount = budget.TargetAmount;
             budget.CurrentAmount += transaction.Amount;
             if (budget.CurrentAmount > targetAmount)
                 notificationHelper.SendOverBudgetNotification(transaction.OwnerId, budget.Name);
@@ -108,11 +108,11 @@ namespace FinPortal.Extensions
 
         private static void UpdateBudgetItemBalance(Transaction transaction)
         {
-            var budgetItem = db.BudgetItems.Find(transaction.BudgetItemId);
-            if (transaction.TransactionType == TransactionType.Deposit || budgetItem == null) 
+            if (transaction.TransactionType == TransactionType.Deposit) 
             { 
                 return;
             }
+            var budgetItem = db.BudgetItems.Find(transaction.BudgetItemId);
             budgetItem.CurrentAmount += transaction.Amount;
             if (budgetItem.CurrentAmount > budgetItem.TargetAmount)
                 notificationHelper.SendOverBudgetItemNotification(transaction.OwnerId, budgetItem.Name);
@@ -135,23 +135,23 @@ namespace FinPortal.Extensions
         }
         private static void ReconcileBudgetBalance(Transaction transaction) 
         {
-            var budgetItem = db.BudgetItems.Find(transaction.BudgetItemId);
-            var budget = db.Budgets.Find(budgetItem.BudgetId);
             if (transaction.TransactionType == TransactionType.Deposit || transaction.BudgetItemId == null)
             {
                 return;
             }
+            var budgetItem = db.BudgetItems.Find(transaction.BudgetItemId);
+            var budget = db.Budgets.Find(budgetItem.BudgetId);
             budget.CurrentAmount -= transaction.Amount;
             db.SaveChanges();
 
         }
         private static void ReconcileBudgetItemBalance(Transaction transaction) 
         {
-            var budgetItem = db.BudgetItems.Find(transaction.BudgetItemId);
             if (transaction.TransactionType == TransactionType.Deposit || transaction.BudgetItem == null)
             {
                 return;
             }
+            var budgetItem = db.BudgetItems.Find(transaction.BudgetItemId);
             budgetItem.CurrentAmount -= transaction.Amount;
             db.SaveChanges();
 

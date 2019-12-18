@@ -18,7 +18,8 @@ namespace FinPortal.Controllers
         // GET: BankAccounts
         public ActionResult Index()
         {
-            var bankAccounts = db.BankAccounts.Include(b => b.Household).Include(b => b.Owner);
+            var userId = User.Identity.GetUserId();
+            var bankAccounts = db.BankAccounts.Where(b => b.OwnerId == userId).Include(b => b.Household).Include(b => b.Owner);
             return View(bankAccounts.ToList());
         }
 

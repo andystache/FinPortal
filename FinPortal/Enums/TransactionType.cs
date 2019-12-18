@@ -9,6 +9,6 @@ namespace FinPortal.Enums
     {
         Deposit,
         Withdrawal,
-        Transfer
+        //Transfer
     }
 }

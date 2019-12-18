@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using FinPortal.Models;
+using Microsoft.AspNet.Identity;
 
 namespace FinPortal.Controllers
 {
@@ -17,7 +18,10 @@ namespace FinPortal.Controllers
         // GET: BudgetItems
         public ActionResult Index()
         {
-            var budgetItems = db.BudgetItems.Include(b => b.Budget);
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            var houseId = user.HouseholdId;
+            var budgetItems = db.Budgets.Where(b => b.HouseholdId == houseId).SelectMany(b => b.BudgetItems).Include(b => b.Budget);
             return View(budgetItems.ToList());
         }
 
@@ -39,7 +43,10 @@ namespace FinPortal.Controllers
         // GET: BudgetItems/Create
         public ActionResult Create()
         {
-            ViewBag.BudgetId = new SelectList(db.Budgets, "Id", "Name");
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            var houseId = user.HouseholdId;
+            ViewBag.BudgetId = new SelectList(db.Budgets.Where(b => b.HouseholdId == houseId), "Id", "Name");
             return View();
         }
 
@@ -60,7 +67,10 @@ namespace FinPortal.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.BudgetId = new SelectList(db.Budgets, "Id", "Name", budgetItem.BudgetId);
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            var houseId = user.HouseholdId;
+            ViewBag.BudgetId = new SelectList(db.Budgets.Where(b => b.HouseholdId == houseId), "Id", "Name");
             return View(budgetItem);
         }
 
@@ -76,7 +86,10 @@ namespace FinPortal.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.BudgetId = new SelectList(db.Budgets, "Id", "Name", budgetItem.BudgetId);
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            var houseId = user.HouseholdId;
+            ViewBag.BudgetId = new SelectList(db.Budgets.Where(b => b.HouseholdId == houseId), "Id", "Name", budgetItem.BudgetId);
             return View(budgetItem);
         }
 
@@ -95,7 +108,10 @@ namespace FinPortal.Controllers
 
                 return RedirectToAction("Index");
             }
-            ViewBag.BudgetId = new SelectList(db.Budgets, "Id", "Name", budgetItem.BudgetId);
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            var houseId = user.HouseholdId;
+            ViewBag.BudgetId = new SelectList(db.Budgets.Where(b => b.HouseholdId == houseId), "Id", "Name", budgetItem.BudgetId);
             return View(budgetItem);
         }
 

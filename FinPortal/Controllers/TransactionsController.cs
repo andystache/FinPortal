@@ -23,7 +23,8 @@ namespace FinPortal.Controllers
         // GET: Transactions
         public ActionResult Index()
         {
-            var transactions = db.Transactions.Include(t => t.BankAccount).Include(t => t.BudgetItem).Include(t => t.Owner);
+            var userId = User.Identity.GetUserId();
+            var transactions = db.Transactions.Where(t => t.OwnerId == userId).Include(t => t.BankAccount).Include(t => t.BudgetItem).Include(t => t.Owner);
             return View(transactions.ToList());
         }
 
@@ -45,8 +46,11 @@ namespace FinPortal.Controllers
         // GET: Transactions/Create
         public ActionResult Create()
         {
-            ViewBag.BankAccountId = new SelectList(db.BankAccounts, "Id", "Name");
-            ViewBag.BudgetItemId = new SelectList(db.BudgetItems, "Id", "Name");
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            var houseId = user.HouseholdId;
+            ViewBag.BankAccountId = new SelectList(db.BankAccounts.Where(b => b.OwnerId == userId), "Id", "Name");
+            ViewBag.BudgetItemId = new SelectList(db.Budgets.Where(b => b.HouseholdId == houseId).SelectMany(b => b.BudgetItems), "Id", "Name");
             ViewBag.OwnerId = new SelectList(db.Users, "Id", "FullName");
             return View();
         }

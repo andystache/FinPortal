@@ -21,7 +21,8 @@ namespace FinPortal.Models
         {
             get
             {
-                return db.BudgetItems.Where(bI => bI.BudgetId == Id).Sum(x => x.TargetAmount);
+                var target = db.BudgetItems.Where(bI => bI.BudgetId == Id).Count();
+                return target != 0 ? db.BudgetItems.Where(bI => bI.BudgetId == Id).Sum(x => x.TargetAmount) : 0;
             }
         }
         public virtual Household Household { get; set; }

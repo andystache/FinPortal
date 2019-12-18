@@ -18,7 +18,10 @@ namespace FinPortal.Controllers
         // GET: Budgets
         public ActionResult Index()
         {
-            var budgets = db.Budgets.Include(b => b.Household).Include(b => b.Owner);
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            var houseId = user.HouseholdId;
+            var budgets = db.Budgets.Where(b => b.HouseholdId == houseId).Include(b => b.Household).Include(b => b.Owner);
             return View(budgets.ToList());
         }
 

@@ -183,10 +183,10 @@ namespace FinPortal.Controllers
             {
                 case "HeadOfHouse":
 
-                    var members = db.Users.Where(u => u.HouseholdId == user.HouseholdId).Count();
-                    if(members > 1)
+                    var members = db.Users.Where(u => u.HouseholdId == user.HouseholdId).Count() - 1;
+                    if(members >= 1)
                     {
-                        TempData["Message"] = $"You are unable to leave the Household! There are still <b>{members}</b> in the house, you must select one of them to assume your role.";
+                        TempData["Message"] = $"You are unable to leave the Household! There are still <b>{members}</b> other members in the house, you must select one of them to assume your role.";
                         return RedirectToAction("ExitDenied");
                     }
                     user.Household.IsDeleted = true;
