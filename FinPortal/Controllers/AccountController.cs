@@ -263,6 +263,27 @@ namespace FinPortal.Controllers
 
         }
 
+        //POST: /Account/ManualJoin
+        [Authorize(Roles ="Guest")]
+        [HttpPost]
+
+        public async Task<ActionResult> ManualJoin(string code)
+        {
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            var realGuid = Guid.Parse(code);
+            var invitation = db.Invitations.FirstOrDefault(i => i.Code == realGuid);
+
+            InvitationHelper.MarkAsInvalid(invitation.Id);
+            roleHelper.RemoveUserFromRole(userId, "Guest");
+            roleHelper.AddUserToRole(userId, "Member");
+
+            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+            return RedirectToAction("Dashboard", "Home");
+
+        }
+
         //
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]

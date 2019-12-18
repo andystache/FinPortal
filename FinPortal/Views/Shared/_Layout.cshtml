@@ -29,6 +29,9 @@
     <link href="~/Content/summernote-bs4.css" rel="stylesheet" />
     <!-- Google Font: Source Sans Pro -->
     <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <!-- Charts-->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     @{
@@ -62,19 +65,19 @@
                             @foreach (var unreadNotification in NotificationHelper.GetUnreadNotifications())
                             {
 
-                            <li>
-                                @using (Html.BeginForm("Dismiss", "Home", FormMethod.Post))
-                                {
-                                    @Html.AntiForgeryToken()
-                                    @Html.Hidden("Id", unreadNotification.Id)
-                                    <span class="time">Created: @unreadNotification.Created.ToString("MMM dd, yyyy")</span><hr />
-                                    <span class="message">@unreadNotification.Subject</span><hr />
-                                    <span class="message">@unreadNotification.Body</span><hr />
-                                    <button type="submit">Dismiss</button>
+                                <li>
+                                    @using (Html.BeginForm("Dismiss", "Home", FormMethod.Post))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.Hidden("Id", unreadNotification.Id)
+                                        <span class="time">Created: @unreadNotification.Created.ToString("MMM dd, yyyy")</span><hr />
+                                        <span class="message">@unreadNotification.Subject</span><hr />
+                                        <span class="message">@unreadNotification.Body</span><hr />
+                                        <button type="submit">Dismiss</button>
 
-                                    <div class="dropdown-divider"></div>
-                                }
-                            </li>
+                                        <div class="dropdown-divider"></div>
+                                    }
+                                </li>
                             }
                         </ul>
                     </div>
@@ -87,7 +90,7 @@
             <!-- Brand Logo -->
             <a href="index3.html" class="brand-link">
                 @*<img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
-                     style="opacity: .8">*@
+                    style="opacity: .8">*@
                 <span class="brand-text font-weight-light">Piggy Bank</span>
             </a>
 
@@ -107,19 +110,7 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
-    with font-awesome or any other icon font library -->
-                        @if (User.IsInRole("Guest"))
-                        {
-                            <li class="nav-item">
-                                <a href="pages/widgets.html" class="nav-link">
-                                    <i class="nav-icon fas fa-user-injured"></i>
-                                    <p>
-                                        My Profile
-                                        <span class="right badge badge-danger">New</span>
-                                    </p>
-                                </a>
-                            </li>
-                        }
+                        with font-awesome or any other icon font library -->
 
                         @if (User.IsInRole("HeadOfHouse"))
                         {
@@ -195,42 +186,48 @@
                         @if (User.IsInRole("Member"))
                         {
                             <li class="nav-item">
-                                <a href="pages/widgets.html" class="nav-link">
-                                    <i class="nav-icon fas fa-user-alt"></i>
-                                    <p>
-                                        My Profile
-                                        <span class="right badge badge-danger">New</span>
-                                    </p>
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="Home/Dashboard" class="nav-link">
-                                    <i class="nav-icon fa fa-biohazard"></i>
+                                <a href="/Home/Dashboard" class="nav-link">
+                                    <i class="nav-icon fa fa-tachometer-alt"></i>
                                     <p>
                                         Dashboard
                                     </p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="BankAccounts/Index" class="nav-link">
-                                    <i class="nav-icon fa fa-biohazard"></i>
+                                <a href="/Invitations/Create" class="nav-link">
+                                    <i class="nav-icon fa fa-envelope-open-text"></i>
+                                    <p>
+                                        Create Invitation
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/BankAccounts/Index" class="nav-link">
+                                    <i class="nav-icon fa fa-university"></i>
                                     <p>
                                         Manage Accounts
                                     </p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="BudgetItems/Index" class="nav-link">
-                                    <i class="nav-icon fa fa-biohazard"></i>
+                                <a href="/Budgets/Index" class="nav-link">
+                                    <i class="nav-icon fa fa-piggy-bank"></i>
+                                    <p>
+                                        Manage Budgets
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/BudgetItems/Index" class="nav-link">
+                                    <i class="nav-icon fa fa-sitemap"></i>
                                     <p>
                                         Manage Budget Items
                                     </p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="Transactions/Index" class="nav-link">
-                                    <i class="nav-icon fa fa-biohazard"></i>
+                                <a href="/Transactions/Index" class="nav-link">
+                                    <i class="nav-icon fa fa-credit-card"></i>
                                     <p>
                                         Manage Transaction
                                     </p>
@@ -307,6 +304,11 @@
     <script src="~/Scripts/OverlayScrollbars.min.js"></script>
     <!-- AdminLTE App -->
     <script src="~/Scripts/adminlte.js"></script>
+    <!-- Charting Files-->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+
 
     @RenderSection("scripts", required: false)
 </body>

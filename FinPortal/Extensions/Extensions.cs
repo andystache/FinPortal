@@ -33,7 +33,7 @@ namespace FinPortal.Extensions
             var emailMessage = new MailMessage(from, invitation.RecipientEmail)
             {
                 Subject = $"You have been invited to join the Piggy Bank Application",
-                Body = $"Please accept this invitation and register as a new household member <a href=\"{callbackUrl}\">here</a>",
+                Body = $"Please accept this invitation and register as a new household member <a href=\"{callbackUrl}\">here</a><br /><br />If you have already created an account copy and paste this code in the dashboard to join the household: {invitation.Code}",
                 IsBodyHtml = true
             };
 
@@ -46,6 +46,7 @@ namespace FinPortal.Extensions
     {
         public static ApplicationDbContext db = new ApplicationDbContext();
         public static NotificationHelper notificationHelper = new NotificationHelper();
+
 
         public static void ReconcileDelete(this Transaction transaction)
         {
@@ -157,6 +158,5 @@ namespace FinPortal.Extensions
 
         }
 
-        //private static void TransferFunds(Transaction transaction)
     }
 }

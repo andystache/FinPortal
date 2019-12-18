@@ -1,4 +1,5 @@
 ﻿@model FinPortal.ViewModels.DashboardVM
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
 
 <h2>Dashboard</h2>
 
@@ -103,47 +104,62 @@
             </div>
             <!-- ./col -->
         </div>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="row">
-                    <div class="col no-gutters">
-                        <div class="small-box bg-orange" data-toggle="modal" href="#createWithdrawal">
-                            <div class="inner">
-                                <h4>New Withdrawal</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="row">
+                <div class="col no-gutters">
+                    <div class="small-box bg-orange" data-toggle="modal" href="#createWithdrawal">
+                        <div class="inner">
+                            <h4>New Withdrawal</h4>
 
-                                <p>Payments</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fa fa-funnel-dollar"></i>
-                            </div>
+                            <p>Payments</p>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col no-gutters">
-                        <div class="small-box bg-warning" data-toggle="modal" href="#createDeposit">
-                            <div class="inner">
-                                <h4>New Deposit</h4>
-
-                                <p>Add money to account</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fa fa-hand-holding-usd"></i>
-                            </div>
+                        <div class="icon">
+                            <i class="fa fa-funnel-dollar"></i>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-5">
-                Line Chart of Spending -Multi tab if possible
+            <div class="row">
+                <div class="col no-gutters">
+                    <div class="small-box bg-warning" data-toggle="modal" href="#createDeposit">
+                        <div class="inner">
+                            <h4>New Deposit</h4>
+
+                            <p>Add money to account</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-hand-holding-usd"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-5">
-                Donut of Budgets
+            <div class="row">
+                <div class="col no-gutters">
+                    <div class="small-box bg-gradient-olive" data-toggle="modal" href="#createTransfer">
+                        <div class="inner">
+                            <h4>Transfer Funds</h4>
+
+                            <p>Move funds</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                Side tabbed content panel with per budget progress bars
+        <div class="col-md-5">
+            <h4>Bank Accounts</h4>
+            <div id="chart1">
+
+            </div>
+        </div>
+        <div class="col-md-5">
+            <h4>Budgets</h4>
+            <div id="chart2">
+
             </div>
         </div>
     </div>
@@ -208,7 +224,28 @@
                 </button>
             </div>
             <div class="modal-body">
-                Input field to paste Invitation.Code with submit button
+                @using (Html.BeginForm("ManualJoin", "Account"))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        <h4>Join a Household</h4>
+                        <hr />
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            <label class="control-label col-md-2" for="Code">Code</label>
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Join" class="btn btn-success" />
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
@@ -216,29 +253,160 @@
         </div>
     </div>
 </div>
+@if (!User.IsInRole("Guest"))
+{
+    <!-- Create Deposit Modal -->
+    <div class="modal fade" id="createDeposit" tabindex="-1" role="dialog" aria-labelledby="createDeposit" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Deposit</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @using (Html.BeginForm("CreateDeposit", "Transactions"))
+                    {
+                        @Html.AntiForgeryToken()
 
-<!-- Create Deposit Modal -->
-<div class="modal fade" id="createDeposit" tabindex="-1" role="dialog" aria-labelledby="createDeposit" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">New Deposit</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="form-group">
+                                <label class="control-label col" for="Bank Account">Bank Account</label>
+                                <div class="col-md-10">
+                                    @Html.DropDownList("BankAccountId", null, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.BankAccountId, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Memo, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.Memo, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Memo, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" value="Create" class="btn btn-success" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                </div>
             </div>
-            <div class="modal-body">
-                @using (Html.BeginForm("CreateDeposit", "Transactions"))
-                {
-                    @Html.AntiForgeryToken()
+        </div>
+    </div>
 
-                    <div class="form-horizontal">
+    <!-- Create Withdrawal Modal -->
+    <div class="modal fade" id="createWithdrawal" tabindex="-1" role="dialog" aria-labelledby="createWithdrawal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Withdrawal</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @using (Html.BeginForm("CreateWithdrawal", "Transactions"))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="form-group">
+                                <label class="control-label col" for="Bank Account">Bank Account</label>
+                                <div class="col-md-10">
+                                    @Html.DropDownList("BankAccountId", null, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.BankAccountId, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col" for="Budget Item">Budget Item</label>
+                                <div class="col-md-10">
+                                    @Html.DropDownList("BudgetItemId", null, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.BudgetItemId, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Memo, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.Memo, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Memo, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" value="Create" class="btn btn-success" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Transfer Modal -->
+    <div class="modal fade" id="createTransfer" tabindex="-1" role="dialog" aria-labelledby="createTransfer" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Transfer Funds</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @using (Html.BeginForm("CreateTransfer", "Transactions"))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                         <div class="form-group">
-                            <label class="control-label col" for="Bank Account">Bank Account</label>
+                            <label class="control-label col" for="Bank Account">From Bank Account</label>
                             <div class="col-md-10">
-                                @Html.DropDownList("BankAccountId", null, htmlAttributes: new { @class = "form-control" })
-                                @Html.ValidationMessageFor(model => model.BankAccountId, "", new { @class = "text-danger" })
+                                @Html.DropDownList("BankAccountFrom", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.BankAccountFrom, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col" for="Bank Account">To Bank Account</label>
+                            <div class="col-md-10">
+                                @Html.DropDownList("BankAccountTo", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.BankAccountTo, "", new { @class = "text-danger" })
                             </div>
                         </div>
 
@@ -249,94 +417,55 @@
                                 @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.Memo, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.Memo, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.Memo, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
                         <div class="form-group">
                             <div class="col-md-offset-2 col-md-10">
                                 <input type="submit" value="Create" class="btn btn-success" />
                             </div>
                         </div>
                     </div>
-                }
+                    }
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<!-- Create Withdrawal Modal -->
-<div class="modal fade" id="createWithdrawal" tabindex="-1" role="dialog" aria-labelledby="createWithdrawal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">New Withdrawal</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                @using (Html.BeginForm("CreateWithdrawal", "Transactions"))
-                {
-                    @Html.AntiForgeryToken()
-
-                    <div class="form-horizontal">
-                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                        <div class="form-group">
-                            <label class="control-label col" for="Bank Account">Bank Account</label>
-                            <div class="col-md-10">
-                                @Html.DropDownList("BankAccountId", null, htmlAttributes: new { @class = "form-control" })
-                                @Html.ValidationMessageFor(model => model.BankAccountId, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col" for="Budget Item">Budget Item</label>
-                            <div class="col-md-10">
-                                @Html.DropDownList("BudgetItemId", null, htmlAttributes: new { @class = "form-control" })
-                                @Html.ValidationMessageFor(model => model.BudgetItemId, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.Memo, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.Memo, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.Memo, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-offset-2 col-md-10">
-                                <input type="submit" value="Create" class="btn btn-success" />
-                            </div>
-                        </div>
-                    </div>
-                }
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+}
+
+@section Scripts{
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('table').DataTable();
+        });
+    </script>
+    <script>
+        $(function () {
+            var url = '@Url.Action("ProduceChart1Data", "Graphing")';
+            $.post(url).then(function (response) {
+                new Morris.Donut({
+                    element: 'chart1',
+                    data: response,
+                    xkey: 'label',
+                    ykeys: ['value'],
+                    labels: ['Balance'],
+                    resize: true
+                });
+            })
+            var url = '@Url.Action("ProduceChart2Data", "Graphing")';
+            $.post(url).then(function (response) {
+                new Morris.Donut({
+                    element: 'chart2',
+                    data: response,
+                    xkey: 'label',
+                    ykeys: ['value'],
+                    labels: ['Budget'],
+                    resize: true
+                });
+            })
+        })
+    </script>
+
+}

@@ -132,27 +132,31 @@ namespace FinPortal.Controllers
         }
 
         // POST: Create Transfer - Needs work on controller logic
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult CreateTransfer(DashboardVM transaction)
-        //{
-        //    var userId = User.Identity.GetUserId();
-        //    var deposit = new Transaction()
-        //    {
-        //        BankAccountId = transaction.BankAccountFrom,
-        //        BudgetItemId = null,
-        //        OwnerId = userId,
-        //        TransactionType = TransactionType.Transfer,
-        //        Created = DateTime.Now,
-        //        Amount = transaction.Amount,
-        //        Memo = transaction.Memo,
-        //        IsDeleted = false
-        //    };
-        //    db.Transactions.Add(deposit);
-        //    db.SaveChanges();
-        //    deposit.UpdateBalances();
-        //    return RedirectToAction("Dashboard", "Home");
-        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateTransfer(DashboardVM transaction)
+        {
+            var userId = User.Identity.GetUserId();
+            var fromAccount = db.BankAccounts.Find(transaction.BankAccountFrom);
+            var toAccount = db.BankAccounts.Find(transaction.BankAccountTo);
+            var transfer = new Transaction()
+            {
+                BankAccountId = transaction.BankAccountFrom,
+                BudgetItemId = null,
+                OwnerId = userId,
+                TransactionType = TransactionType.Transfer,
+                Created = DateTime.Now,
+                Amount = transaction.Amount,
+                Memo = $"${transaction.Amount} transfered from {fromAccount.Name} to {toAccount.Name}",
+                IsDeleted = false
+            };
+            db.Transactions.Add(transfer);
+            db.SaveChanges();
+            fromAccount.CurrentBalance -= transfer.Amount;
+            toAccount.CurrentBalance += transfer.Amount;
+            db.SaveChanges();
+            return RedirectToAction("Dashboard", "Home");
+        }
 
 
         // GET: Transactions/Edit/5

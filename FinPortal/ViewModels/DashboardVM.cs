@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FinPortal.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -17,12 +18,14 @@ namespace FinPortal.ViewModels
         public int BudgetItemId { get; set; }
         public decimal Amount { get; set; }
         public string Memo { get; set; }
+        public int BankAccountFrom { get; set; }
+        public int BankAccountTo { get; set; }
+
 
         //Card Information
         public decimal BankBalance { get; set; }
         public decimal BudgetTotal { get; set; }
         public decimal LastTransaction { get; set; }
-        
 
     }
 }
